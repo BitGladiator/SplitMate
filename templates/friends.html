@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Friends | SplitMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7B68EE;
+            --primary-dark: #5F4BD8;
+            --primary-light: #F0EDFF;
+            --secondary: #20C5C5;
+            --accent: #FF7E5F;
+            --dark: #1A1A2E;
+            --darker: #12121A;
+            --light: #F9FAFF;
+            --lighter: #FFFFFF;
+            --gray: #E2E8F0;
+            --gray-dark: #94A3B8;
+            --success: #2ECC71;
+            --danger: #FF4757;
+            --border-radius: 24px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+            --box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+            --box-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --glass-effect: rgba(255, 255, 255, 0.94);
+            --border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F5F7FF 0%, #EDF0F7 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 24px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--darker);
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: -1px;
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .back-btn {
+            background: var(--lighter);
+            color: var(--primary);
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow-sm);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(123, 104, 238, 0.15);
+            color: var(--primary-dark);
+        }
+        
+        .back-btn i {
+            font-size: 14px;
+        }
+        
+        .card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 48px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: var(--border);
+            margin-bottom: 40px;
+        }
+        
+        .add-friend-form {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .add-friend-input {
+            flex: 1;
+            padding: 18px 24px;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--lighter);
+            color: var(--darker);
+        }
+        
+        .add-friend-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(123, 104, 238, 0.15);
+        }
+        
+        .add-friend-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--box-shadow-sm);
+        }
+        
+        .add-friend-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(123, 104, 238, 0.25);
+        }
+        
+        .add-friend-btn:active {
+            transform: translateY(0);
+        }
+        
+        .friends-list {
+            list-style: none;
+        }
+        
+        .friend-item {
+            background: var(--lighter);
+            border-radius: var(--border-radius-sm);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--box-shadow-sm);
+            transition: var(--transition);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        
+        .friend-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+        
+        .friend-name {
+            font-weight: 600;
+            font-size: 17px;
+            color: var(--darker);
+        }
+        
+        .friend-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .delete-btn {
+            background: var(--lighter);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .delete-btn:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(255, 71, 87, 0.2);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--gray-dark);
+        }
+        
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            color: var(--gray);
+        }
+        
+        .empty-text {
+            font-size: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .empty-btn {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: none;
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .empty-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(123, 104, 238, 0.2);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Decorative elements */
+        .decorative-circle {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(123, 104, 238, 0.06) 0%, rgba(123, 104, 238, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .circle-1 {
+            top: -300px;
+            right: -300px;
+        }
+        
+        .circle-2 {
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(32, 197, 197, 0.06) 0%, rgba(32, 197, 197, 0) 70%);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 16px;
+            }
+            
+            .card {
+                padding: 32px;
+            }
+            
+            .add-friend-form {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .add-friend-btn {
+                padding: 16px;
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Your Friends</h1>
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Dashboard
+            </a>
+        </div>
+        
+        <div class="card">
+            <form method="POST" class="add-friend-form">
+                <input type="text" name="name" class="add-friend-input" placeholder="Enter friend's name" required>
+                <button type="submit" class="add-friend-btn">
+                    <i class="fas fa-user-plus"></i>
+                    Add Friend
+                </button>
+            </form>
+            
+            <ul class="friends-list">
+                {% if friends %}
+                    {% for friend in friends %}
+                    <li class="friend-item" style="animation-delay: {{ loop.index * 0.05 }}s">
+                        <span class="friend-name">{{ friend.name }}</span>
+                        <div class="friend-actions">
+                            <form action="{{ url_for('delete_friend', friend_id=friend.id) }}" method="POST">
+                                <button type="submit" class="delete-btn">
+                                    <i class="fas fa-trash-alt"></i>
+                                    Delete
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-user-friends"></i>
+                        </div>
+                        <h3 class="empty-text">You haven't added any friends yet</h3>
+                        <button class="empty-btn" onclick="document.querySelector('.add-friend-input').focus()">
+                            <i class="fas fa-plus"></i> Add Your First Friend
+                        </button>
+                    </div>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate friend items in sequence
+            const friendItems = document.querySelectorAll('.friend-item');
+            friendItems.forEach(item => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            });
+            
+            // Add floating animation to empty state icon
+            const emptyIcon = document.querySelector('.empty-icon i');
+            if (emptyIcon) {
+                emptyIcon.style.animation = 'float 3s ease-in-out infinite';
+            }
+            
+            // Focus on input when empty state button is clicked
+            const emptyBtn = document.querySelector('.empty-btn');
+            if (emptyBtn) {
+                emptyBtn.addEventListener('click', function() {
+                    document.querySelector('.add-friend-input').focus();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

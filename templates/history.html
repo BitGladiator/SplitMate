@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction History | SplitMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7B68EE;
+            --primary-dark: #5F4BD8;
+            --primary-light: #F0EDFF;
+            --secondary: #20C5C5;
+            --accent: #FF7E5F;
+            --dark: #1A1A2E;
+            --darker: #12121A;
+            --light: #F9FAFF;
+            --lighter: #FFFFFF;
+            --gray: #E2E8F0;
+            --gray-dark: #94A3B8;
+            --success: #2ECC71;
+            --danger: #FF4757;
+            --warning: #FFA502;
+            --border-radius: 24px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+            --box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+            --box-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --glass-effect: rgba(255, 255, 255, 0.96);
+            --border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F5F7FF 0%, #EDF0F7 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            padding: 40px 24px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--darker);
+            font-weight: 700;
+            font-size: 38px;
+            letter-spacing: -1.2px;
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        h2 {
+            font-size: 26px;
+            font-weight: 700;
+            margin: 40px 0 24px;
+            color: var(--darker);
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            padding-left: 16px;
+        }
+        
+        h2::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 6px;
+            height: 20px;
+            width: 4px;
+            background: linear-gradient(var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .back-btn {
+            background: var(--lighter);
+            color: var(--primary);
+            border: none;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow-sm);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(123, 104, 238, 0.15);
+            color: var(--primary-dark);
+        }
+        
+        .back-btn i {
+            font-size: 14px;
+        }
+        
+        .card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 48px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: var(--border);
+            margin-bottom: 40px;
+        }
+        
+        .transaction-list {
+            list-style: none;
+        }
+        
+        .transaction-item {
+            background: var(--lighter);
+            border-radius: var(--border-radius-sm);
+            padding: 28px;
+            margin-bottom: 20px;
+            box-shadow: var(--box-shadow-sm);
+            transition: var(--transition);
+            animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+            transform: translateY(10px);
+            border-left: 4px solid var(--primary);
+            position: relative;
+        }
+        
+        .transaction-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.12);
+        }
+        
+        .expense-item {
+            border-left-color: var(--primary);
+        }
+        
+        .settlement-item {
+            border-left-color: var(--secondary);
+        }
+        
+        .transaction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+            position: relative;
+        }
+        
+        .transaction-title {
+            font-weight: 700;
+            font-size: 19px;
+            color: var(--darker);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            padding-right: 40px; /* Space for delete button */
+        }
+        
+        .transaction-amount-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .transaction-amount {
+            font-weight: 700;
+            font-size: 19px;
+            white-space: nowrap;
+        }
+        
+        .expense-amount {
+            color: var(--primary-dark);
+        }
+        
+        .settlement-amount {
+            color: var(--secondary);
+        }
+        
+        .transaction-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 28px;
+            margin-top: 20px;
+        }
+        
+        .detail-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            color: var(--gray-dark);
+        }
+        
+        .detail-group i {
+            color: var(--primary);
+            font-size: 17px;
+        }
+        
+        .participants {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .participant-tag {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        
+        .participant-tag:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(123, 104, 238, 0.1);
+        }
+        
+        .participant-tag i {
+            font-size: 13px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 60px 0;
+            color: var(--gray-dark);
+        }
+        
+        .empty-icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+            color: var(--gray);
+        }
+        
+        .empty-text {
+            font-size: 17px;
+            margin-bottom: 28px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 36px;
+            border-bottom: 1px solid var(--gray);
+            padding-bottom: 10px;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray-dark);
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .tab.active {
+            color: var(--primary-dark);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+        
+        .tab:hover:not(.active) {
+            color: var(--darker);
+            background: rgba(123, 104, 238, 0.05);
+        }
+        
+        .delete-btn {
+            position: absolute;
+            top: 28px; /* Changed from top: 0 to align with content */
+            right: 28px; /* Changed from right: 0 to give some spacing */
+            background: rgba(255, 71, 87, 0.1);
+            border: none;
+            color: var(--danger);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .delete-btn:hover {
+            background: rgba(255, 71, 87, 0.2);
+            transform: scale(1.1) rotate(8deg);
+        }
+        
+        .settle-btn {
+            background-color: var(--secondary);
+            color: white;
+            padding: 14px 28px;
+            text-decoration: none;
+            border-radius: var(--border-radius-xs);
+            font-weight: 600;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--box-shadow-sm);
+            font-size: 15px;
+        }
+        
+        .settle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(32, 197, 197, 0.25);
+            background-color: #1db1b1;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        
+        /* Decorative elements */
+        .decorative-circle {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(123, 104, 238, 0.08) 0%, rgba(123, 104, 238, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .circle-1 {
+            top: -300px;
+            right: -300px;
+            animation-delay: 0.5s;
+        }
+        
+        .circle-2 {
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(32, 197, 197, 0.08) 0%, rgba(32, 197, 197, 0) 70%);
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: var(--lighter);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .modal-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 28px;
+        }
+        @media (max-width: 768px) {
+            .delete-btn {
+                top: 20px;
+                right: 20px;
+                width: 32px;
+                height: 32px;
+            }
+            
+            .transaction-header {
+                padding-right: 40px; /* Make space for delete button */
+            }
+        }
+        .transaction-amount-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-right: 40px; /* Add space for delete button */
+        }
+        .modal-btn {
+            padding: 14px 28px;
+            border-radius: var(--border-radius-xs);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 15px;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .modal-btn-confirm {
+            background: var(--danger);
+            color: white;
+            border: none;
+            box-shadow: 0 8px 16px rgba(255, 71, 87, 0.2);
+        }
+        
+        .modal-btn-cancel {
+            background: var(--lighter);
+            color: var(--gray-dark);
+            border: 1px solid var(--gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        
+        .modal-btn-confirm:hover {
+            background: #e84141;
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(255, 71, 87, 0.3);
+        }
+        
+        .modal-btn-cancel:hover {
+            background: var(--lighter);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 16px;
+            }
+            
+            .card {
+                padding: 32px;
+            }
+            
+            h1 {
+                font-size: 30px;
+            }
+            
+            h2 {
+                font-size: 22px;
+                margin: 32px 0 20px;
+            }
+            
+            .transaction-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .transaction-title {
+                font-size: 17px;
+                padding-right: 0;
+            }
+            
+            .transaction-amount {
+                font-size: 17px;
+            }
+            
+            .delete-btn {
+                top: 20px;
+                right: 20px;
+                width: 32px;
+                height: 32px;
+            }
+            
+            .modal-content {
+                padding: 32px 24px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .modal-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    
+    <!-- Delete Confirmation Modal -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <div style="margin-bottom: 24px;">
+                <div style="width: 60px; height: 60px; background: rgba(255, 71, 87, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 28px; color: var(--danger);"></i>
+                </div>
+                <h3 style="margin-bottom: 8px; font-size: 22px; color: var(--darker);">Confirm Deletion</h3>
+                <p style="color: var(--gray-dark); line-height: 1.5;">Are you sure you want to delete this transaction? This action cannot be undone.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                    Cancel
+                </button>
+                <button class="modal-btn modal-btn-confirm" id="confirmDelete">
+                    <i class="fas fa-trash-alt"></i>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Transaction History</h1>
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Dashboard
+            </a>
+        </div>
+        <div style="margin-bottom: 24px; display: flex; justify-content: flex-end;">
+            <a href="{{ url_for('settle') }}" class="settle-btn">
+                <i class="fas fa-hand-holding-usd"></i>
+                Settle Up
+            </a>
+        </div>
+        <div class="card">
+            <div class="tabs">
+                <div class="tab active" onclick="filterTransactions('all')">All</div>
+                <div class="tab" onclick="filterTransactions('expenses')">Expenses</div>
+                <div class="tab" onclick="filterTransactions('settlements')">Settlements</div>
+            </div>
+            
+            <h2>Expenses</h2>
+            <ul class="transaction-list" id="expenses-list">
+                {% if expenses %}
+                    {% for expense in expenses %}
+                    <li class="transaction-item expense-item" style="animation-delay: {{ loop.index * 0.05 }}s">
+                        <div class="transaction-header">
+                            <div class="transaction-title">
+                                <i class="fas fa-receipt" style="color: var(--primary);"></i>
+                                {{ expense.description }}
+                            </div>
+                            <div class="transaction-amount-container">
+                                <div class="transaction-amount expense-amount">₹{{ "%.2f"|format(expense.amount) }}</div>
+                            </div>
+                            <button class="delete-btn" onclick="showDeleteModal('expense', {{ expense.id }})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="detail-group">
+                                <i class="fas fa-user-circle"></i>
+                                <span>Paid by <strong>{{ expense.paid_by.name }}</strong></span>
+                            </div>
+                            <div class="detail-group">
+                                <i class="fas fa-calendar-day"></i>
+                                <span>{{ expense.timestamp.strftime('%b %d, %Y') }}</span>
+                            </div>
+                        </div>
+                        <div class="detail-group">
+                            <i class="fas fa-users"></i>
+                            <span>Split between:</span>
+                        </div>
+                        <div class="participants">
+                            {% for friend in expense.split_with() %}
+                            <div class="participant-tag">
+                                <i class="fas fa-user"></i>
+                                {{ friend.name }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <h3 class="empty-text">No expenses recorded yet</h3>
+                    </div>
+                {% endif %}
+            </ul>
+            
+            <h2>Settlements</h2>
+            <ul class="transaction-list" id="settlements-list">
+                {% if settlements %}
+                    {% for s in settlements %}
+                    <li class="transaction-item settlement-item" style="animation-delay: {{ loop.index * 0.05 }}s">
+                        <div class="transaction-header">
+                            <div class="transaction-title">
+                                <i class="fas fa-hand-holding-usd" style="color: var(--secondary);"></i>
+                                Settlement
+                            </div>
+                            <div class="transaction-amount-container">
+                                <div class="transaction-amount settlement-amount">₹{{ "%.2f"|format(s.amount) }}</div>
+                                <button class="delete-btn" onclick="showDeleteModal('settlement', {{ s.id }})">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="detail-group">
+                                <i class="fas fa-user-arrow-up"></i>
+                                <span><strong>{{ s.payer.name }}</strong> paid</span>
+                            </div>
+                            <div class="detail-group">
+                                <i class="fas fa-user-arrow-down"></i>
+                                <span>to <strong>{{ s.payee.name }}</strong></span>
+                            </div>
+                            <div class="detail-group">
+                                <i class="fas fa-calendar-day"></i>
+                                <span>{{ s.timestamp.strftime('%b %d, %Y') }}</span>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3 class="empty-text">No settlements recorded yet</h3>
+                    </div>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let currentDeleteType = '';
+        let currentDeleteId = '';
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate transaction items in sequence
+            const transactionItems = document.querySelectorAll('.transaction-item');
+            transactionItems.forEach(item => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateY(0)';
+            });
+            
+            // Add floating animation to empty state icons
+            const emptyIcons = document.querySelectorAll('.empty-icon i');
+            emptyIcons.forEach(icon => {
+                icon.style.animation = 'float 3s ease-in-out infinite';
+            });
+            
+            // Set up delete confirmation
+            document.getElementById('confirmDelete').addEventListener('click', function() {
+                deleteTransaction();
+            });
+        });
+        
+        function filterTransactions(type) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            
+            if (type === 'all') {
+                document.getElementById('expenses-list').style.display = 'block';
+                document.getElementById('settlements-list').style.display = 'block';
+                document.querySelectorAll('h2').forEach(h2 => h2.style.display = 'block');
+            } else if (type === 'expenses') {
+                document.getElementById('expenses-list').style.display = 'block';
+                document.getElementById('settlements-list').style.display = 'none';
+                document.querySelectorAll('h2')[0].style.display = 'block';
+                document.querySelectorAll('h2')[1].style.display = 'none';
+            } else if (type === 'settlements') {
+                document.getElementById('expenses-list').style.display = 'none';
+                document.getElementById('settlements-list').style.display = 'block';
+                document.querySelectorAll('h2')[0].style.display = 'none';
+                document.querySelectorAll('h2')[1].style.display = 'block';
+            }
+        }
+        
+        function showDeleteModal(type, id) {
+            currentDeleteType = type;
+            currentDeleteId = id;
+            const modal = document.getElementById('deleteModal');
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('deleteModal');
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+        
+        function deleteTransaction() {
+            // Create a form and submit it
+            const form = document.createElement('form');
+            form.method = 'POST';
+            
+            if (currentDeleteType === 'expense') {
+                form.action = `/delete_expense/${currentDeleteId}`;
+            } else if (currentDeleteType === 'settlement') {
+                form.action = `/delete_settlement/${currentDeleteId}`;
+            }
+            
+            // Add CSRF token if needed (you may need to adjust this based on your framework)
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrf_token';
+            csrfToken.value = '{{ csrf_token() }}'; // This needs to be replaced with your actual CSRF token
+            form.appendChild(csrfToken);
+            
+            document.body.appendChild(form);
+            form.submit();
+            
+            closeModal();
+        }
+    </script>
+</body>
+</html>

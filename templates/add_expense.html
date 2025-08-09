@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Expense - SplitMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #6C4DF6;
+            --primary-dark: #5A3EE8;
+            --primary-light: #F0EDFF;
+            --secondary: #2EC4B6;
+            --accent: #FF6B6B;
+            --dark: #1E1E2E;
+            --darker: #12121A;
+            --light: #F9FAFF;
+            --lighter: #FFFFFF;
+            --gray: #E2E8F0;
+            --gray-dark: #94A3B8;
+            --success: #2ECC71;
+            --border-radius: 24px;
+            --border-radius-sm: 12px;
+            --box-shadow: 0 24px 48px rgba(0, 0, 0, 0.08);
+            --box-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --glass-effect: rgba(255, 255, 255, 0.92);
+            --border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F5F7FF 0%, #EDF0F7 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 40px 20px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 880px;
+        }
+        
+        .card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 64px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: var(--border);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            background-size: 200% 200%;
+            animation: gradientBG 8s ease infinite;
+        }
+        
+        h1 {
+            color: var(--darker);
+            margin-bottom: 48px;
+            font-weight: 700;
+            text-align: center;
+            position: relative;
+            padding-bottom: 16px;
+            font-size: 32px;
+            letter-spacing: -0.5px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .form-group {
+            margin-bottom: 32px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--darker);
+            font-size: 15px;
+            letter-spacing: 0.2px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 18px 24px;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--lighter);
+            color: var(--darker);
+            appearance: none;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(108, 77, 246, 0.15);
+        }
+        
+        input:hover, select:hover {
+            border-color: var(--primary);
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 18px;
+            pointer-events: none;
+        }
+        
+        .amount-input {
+            padding-left: 48px;
+            font-weight: 500;
+        }
+        
+        select[multiple] {
+            min-height: 160px;
+            padding: 16px;
+            border-radius: var(--border-radius-sm);
+        }
+        
+        select[multiple] option {
+            padding: 12px 16px;
+            border-radius: var(--border-radius-sm);
+            margin: 6px 0;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+        
+        select[multiple] option:checked {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+        }
+        
+        select[multiple] option:hover {
+            background-color: var(--primary-light);
+            color: var(--darker);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            letter-spacing: 0.5px;
+            box-shadow: var(--box-shadow-sm);
+            position: relative;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(255, 255, 255, 0) 60%
+            );
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(108, 77, 246, 0.25);
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .form-footer {
+            text-align: center;
+            margin-top: 40px;
+            color: var(--gray-dark);
+            font-size: 15px;
+        }
+        
+        .form-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+        }
+        
+        .form-footer a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+        }
+        
+        .form-footer a:hover::after {
+            width: 100%;
+        }
+        
+        .select-icon {
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+            font-size: 14px;
+        }
+        
+        .floating-label {
+            position: absolute;
+            left: 24px;
+            top: 18px;
+            color: var(--gray-dark);
+            transition: var(--transition);
+            pointer-events: none;
+            font-size: 16px;
+            background: var(--lighter);
+            padding: 0 8px;
+            border-radius: 20px;
+        }
+        
+        input:focus + .floating-label,
+        input:not(:placeholder-shown) + .floating-label {
+            top: -10px;
+            left: 16px;
+            font-size: 13px;
+            background: var(--lighter);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        small {
+            font-size: 13px;
+            color: var(--gray-dark);
+            font-weight: 400;
+            margin-left: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .card {
+                padding: 48px 32px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .card {
+            animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Checkbox style for multiple select */
+        select[multiple] option::before {
+            content: '✓';
+            margin-right: 8px;
+            color: transparent;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 1px solid var(--gray);
+            border-radius: 4px;
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+        }
+        
+        select[multiple] option:checked::before {
+            color: white;
+            border-color: white;
+        }
+        
+        /* Decorative elements */
+        .decorative-circle {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(108, 77, 246, 0.08) 0%, rgba(108, 77, 246, 0) 70%);
+            z-index: -1;
+        }
+        
+        .circle-1 {
+            top: -150px;
+            right: -150px;
+        }
+        
+        .circle-2 {
+            bottom: -100px;
+            left: -100px;
+            background: radial-gradient(circle, rgba(46, 196, 182, 0.08) 0%, rgba(46, 196, 182, 0) 70%);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="decorative-circle circle-1"></div>
+        <div class="decorative-circle circle-2"></div>
+        
+        <div class="card">
+            <h1>Add New Expense</h1>
+            <form method="POST" action="{{ url_for('add_expense') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                
+                <div class="form-group">
+                    <label for="description">Expense Description</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="description" name="description" placeholder=" " required />
+                        <span class="floating-label">e.g. Dinner at Taj, Movie tickets</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="amount" name="amount" class="amount-input" step="0.01" placeholder=" " required />
+                        <span class="floating-label">Enter amount</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="paid_by">Paid By</label>
+                    <div class="input-wrapper">
+                        <select id="paid_by" name="paid_by" required>
+                            {% for friend in friends %}
+                                <option value="{{ friend.id }}">{{ friend.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <i class="fas fa-chevron-down select-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="split_between">Split Between <small>(Select multiple participants)</small></label>
+                    <select id="split_between" name="split_between" multiple required>
+                        {% for friend in friends %}
+                            <option value="{{ friend.id }}" selected>{{ friend.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-paper-plane"></i> Add Expense
+                </button>
+                
+                <div class="form-footer">
+                    Need to add a new friend? 
+                    <a href="{{ url_for('friends') }}">Click here</a>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Staggered animations for form groups
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach((group, index) => {
+                group.style.opacity = '0';
+                group.style.animation = `fadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${index * 0.1 + 0.3}s forwards`;
+            });
+            
+            // Currency formatting on blur
+            const amountInput = document.getElementById('amount');
+            amountInput.addEventListener('blur', function() {
+                if (this.value) {
+                    // Parse the value and fix to 2 decimal places
+                    let num = parseFloat(this.value);
+                    if (!isNaN(num)) {
+                        this.value = num.toFixed(2);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+/* styles.css - Polished SplitMate UI */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.header {
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    padding: 1.5rem;
+    text-align: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.icon {
+    font-size: 2rem;
+    color: #4f46e5;
+    margin-bottom: 0.5rem;
+}
+
+.section {
+    margin-top: 2rem;
+}
+
+.expense-list, .balance-list {
+    background: white;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.expense-item, .balance-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+.expense-item:last-child, .balance-item:last-child {
+    border-bottom: none;
+}
+
+.expense-title {
+    font-weight: 600;
+}
+
+.expense-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.expense-status {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+}
+.expense-status.pending {
+    color: #f59e0b;
+}
+.expense-status i {
+    font-size: 0.6rem;
+    margin-right: 0.3rem;
+}
+
+.expense-amount {
+    font-weight: bold;
+    color: #111827;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    margin-left: 0.5rem;
+    font-size: 1rem;
+}
+.delete-btn:hover {
+    color: #dc2626;
+}
+
+.balance-item.positive {
+    color: #16a34a;
+}
+.balance-item.negative {
+    color: #dc2626;
+}
+.balance-item.neutral {
+    color: #6b7280;
+}
+
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #4f46e5;
+    color: white;
+    padding: 1rem;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+.fab:hover {
+    background: #4338ca;
+}
+
+.no-data {
+    color: #6b7280;
+    text-align: center;
+    padding: 1rem;
+}
+.fab {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+    z-index: 1000;
+    text-decoration: none;
+}

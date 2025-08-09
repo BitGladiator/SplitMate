@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settle Payment | SplitMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #7B68EE;
+            --primary-dark: #5F4BD8;
+            --primary-light: #F0EDFF;
+            --secondary: #20C5C5;
+            --accent: #FF7E5F;
+            --dark: #1A1A2E;
+            --darker: #12121A;
+            --light: #F9FAFF;
+            --lighter: #FFFFFF;
+            --gray: #E2E8F0;
+            --gray-dark: #94A3B8;
+            --success: #2ECC71;
+            --danger: #FF4757;
+            --border-radius: 24px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+            --box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+            --box-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --glass-effect: rgba(255, 255, 255, 0.94);
+            --border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F5F7FF 0%, #EDF0F7 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px 24px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--darker);
+            font-weight: 700;
+            font-size: 36px;
+            letter-spacing: -1px;
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .back-btn {
+            background: var(--lighter);
+            color: var(--primary);
+            border: none;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow-sm);
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(123, 104, 238, 0.15);
+            color: var(--primary-dark);
+        }
+        
+        .back-btn i {
+            font-size: 14px;
+        }
+        
+        .card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 48px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: var(--border);
+            animation: fadeIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        
+        .settle-form {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: var(--darker);
+            font-size: 15px;
+            letter-spacing: 0.2px;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 18px 24px;
+            border: 1px solid var(--gray);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            transition: var(--transition);
+            background-color: var(--lighter);
+            color: var(--darker);
+            appearance: none;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(123, 104, 238, 0.15);
+        }
+        
+        select:hover, input:hover {
+            border-color: var(--primary);
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .currency-symbol {
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 18px;
+            pointer-events: none;
+        }
+        
+        .amount-input {
+            padding-left: 48px;
+            font-weight: 500;
+        }
+        
+        .select-icon {
+            position: absolute;
+            right: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            pointer-events: none;
+            font-size: 14px;
+        }
+        
+        .floating-label {
+            position: absolute;
+            left: 24px;
+            top: 18px;
+            color: var(--gray-dark);
+            transition: var(--transition);
+            pointer-events: none;
+            font-size: 16px;
+            background: var(--lighter);
+            padding: 0 8px;
+            border-radius: 20px;
+        }
+        
+        input:focus + .floating-label,
+        input:not(:placeholder-shown) + .floating-label {
+            top: -10px;
+            left: 16px;
+            font-size: 13px;
+            background: var(--lighter);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            letter-spacing: 0.5px;
+            box-shadow: var(--box-shadow-sm);
+            position: relative;
+            overflow: hidden;
+            margin-top: 16px;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3) 0%,
+                rgba(255, 255, 255, 0) 60%
+            );
+            transform: rotate(30deg);
+            transition: var(--transition);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(108, 77, 246, 0.25);
+        }
+        
+        .btn:hover::after {
+            left: 100%;
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn i {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+        
+        .transfer-icon {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .transfer-icon-inner {
+            background: var(--primary-light);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-size: 24px;
+            box-shadow: 0 8px 24px rgba(123, 104, 238, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+        
+        .transfer-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Decorative elements */
+        .decorative-circle {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(123, 104, 238, 0.06) 0%, rgba(123, 104, 238, 0) 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+        
+        .circle-1 {
+            top: -300px;
+            right: -300px;
+        }
+        
+        .circle-2 {
+            bottom: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(32, 197, 197, 0.06) 0%, rgba(32, 197, 197, 0) 70%);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 16px;
+            }
+            
+            .card {
+                padding: 32px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="decorative-circle circle-1"></div>
+    <div class="decorative-circle circle-2"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>Settle Payment</h1>
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Dashboard
+            </a>
+        </div>
+        
+        <div class="card">
+            <form method="POST" class="settle-form">
+                <div class="form-group">
+                    <label for="payer">Payer</label>
+                    <div class="input-wrapper">
+                        <select id="payer" name="payer" required>
+                            {% for friend in friends %}
+                                <option value="{{ friend.id }}">{{ friend.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <i class="fas fa-user-arrow-up select-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="transfer-icon">
+                    <div class="transfer-line"></div>
+                    <div class="transfer-icon-inner">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="payee">Payee</label>
+                    <div class="input-wrapper">
+                        <select id="payee" name="payee" required>
+                            {% for friend in friends %}
+                                <option value="{{ friend.id }}">{{ friend.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <i class="fas fa-user-arrow-down select-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <div class="input-wrapper">
+                        <span class="currency-symbol">₹</span>
+                        <input type="number" id="amount" name="amount" class="amount-input" step="0.01" placeholder=" " required>
+                        <span class="floating-label">0.00</span>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">
+                    <i class="fas fa-hand-holding-usd"></i> Complete Settlement
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Currency formatting
+            const amountInput = document.getElementById('amount');
+            amountInput.addEventListener('blur', function() {
+                if (this.value) {
+                    this.value = parseFloat(this.value).toFixed(2);
+                }
+            });
+            
+            // Prevent payer and payee from being the same
+            const payerSelect = document.getElementById('payer');
+            const payeeSelect = document.getElementById('payee');
+            
+            payerSelect.addEventListener('change', function() {
+                if (this.value === payeeSelect.value) {
+                    // Find another option to select
+                    for (let option of payeeSelect.options) {
+                        if (option.value !== this.value) {
+                            payeeSelect.value = option.value;
+                            break;
+                        }
+                    }
+                }
+            });
+            
+            payeeSelect.addEventListener('change', function() {
+                if (this.value === payerSelect.value) {
+                    // Find another option to select
+                    for (let option of payerSelect.options) {
+                        if (option.value !== this.value) {
+                            payerSelect.value = option.value;
+                            break;
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

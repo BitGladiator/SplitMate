@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - SplitMate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #4338ca;
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --radius: 16px;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Inter', sans-serif;
+        background: var(--bg);
+        color: var(--text-dark);
+        line-height: 1.5;
+    }
+
+    /* Header */
+    .header {
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        color: white;
+        padding: 1rem 1.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .header h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 1.2rem;
+    }
+
+    /* Stats */
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+    }
+    .card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        padding: 1rem;
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+    .card .icon {
+        font-size: 1.6rem;
+        color: var(--primary);
+        margin-bottom: 0.3rem;
+    }
+    .card h2 {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+    .card p {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    /* Sections */
+    .section {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        padding: 1rem;
+        box-shadow: var(--shadow);
+        margin-top: 1.5rem;
+    }
+    .section h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        color: var(--text-dark);
+    }
+
+    /* Expense List */
+    .expense-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+    .expense-item {
+        background: #f9fafb;
+        padding: 0.7rem 0.9rem;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    .expense-title {
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+    .expense-meta {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        display: flex;
+        gap: 0.3rem;
+        flex-wrap: wrap;
+    }
+    .expense-status {
+        padding: 0.15rem 0.4rem;
+        border-radius: 6px;
+        font-size: 0.7rem;
+    }
+    .expense-status.pending {
+        background: #fef3c7;
+        color: #b45309;
+    }
+    .expense-status.settled {
+        background: #dcfce7;
+        color: #166534;
+    }
+    .expense-amount {
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .delete-btn {
+        border: none;
+        background: none;
+        color: #ef4444;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    /* Balances */
+    .balance-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .balance-item {
+        padding: 0.6rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+    }
+    .balance-item.positive {
+        background: #dcfce7;
+        color: #166534;
+    }
+    .balance-item.negative {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+    .balance-item.neutral {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    /* Floating Action Button */
+    .fab {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 54px;
+        height: 54px;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .fab:hover {
+        background: var(--primary-dark);
+    }
+
+    /* Mobile Tweaks */
+    @media (max-width: 600px) {
+        .card p { font-size: 1.1rem; }
+        .expense-item { flex-direction: column; align-items: flex-start; }
+        .expense-amount { margin-top: 0.4rem; }
+    }
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>SplitMate Dashboard</h1>
+</div>
+
+<div class="container">
+    <!-- Stats -->
+    <div class="stats">
+        <div class="card">
+            <div class="icon"><i class="fas fa-wallet"></i></div>
+            <h2>Total Spent</h2>
+            <p>₹{{ total_spent }}</p>
+        </div>
+        <div class="card">
+            <div class="icon"><i class="fas fa-user-friends"></i></div>
+            <h2>Total Friends</h2>
+            <p>{{ total_friends }}</p>
+        </div>
+        <div class="card">
+            <div class="icon"><i class="fas fa-receipt"></i></div>
+            <h2>Total Expenses</h2>
+            <p>{{ total_expenses }}</p>
+        </div>
+    </div>
+
+    <!-- Recent Expenses -->
+    <div class="section">
+        <h3><i class="fas fa-clock"></i> Recent Expenses</h3>
+        <div class="expense-list">
+            {% if expenses %}
+                {% for expense in expenses %}
+                    <div class="expense-item">
+                        <div>
+                            <span class="expense-title">{{ expense.description }}</span>
+                            <div class="expense-meta">
+                                <span>by {{ expense.payer.name.title() }}</span>
+                                <span>• {{ expense.timestamp.strftime('%b %d, %Y') }}</span>
+                                <span class="expense-status {% if not expense.is_settled %}pending{% else %}settled{% endif %}">
+                                    {% if expense.is_settled %}Settled{% else %}Pending{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="expense-amount">
+                            ₹{{ expense.amount }}
+                            <form action="{{ url_for('delete_expense', expense_id=expense.id) }}" method="POST">
+                                <button type="submit" class="delete-btn"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-data">No expenses recorded yet</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Balances -->
+    <div class="section">
+        <h3><i class="fas fa-scale-balanced"></i> Friend Balances</h3>
+        <div class="balance-list">
+            {% if balances %}
+                {% for key, amount in balances.items() %}
+                    <div class="balance-item {% if amount > 0 %}positive{% elif amount < 0 %}negative{% else %}neutral{% endif %}">
+                        <span>{{ key }}</span>
+                        <span>{% if amount > 0 %}+{% endif %}₹{{ amount }}</span>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-data">All balances are settled</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+    <a href="{{ url_for('add_expense') }}" class="fab">
+        <i class="fas fa-plus"></i>
+    </a>
+
+</body>
+</html>
