@@ -342,6 +342,7 @@
         <div class="card">
             <form method="POST" class="add-friend-form">
                 <input type="text" name="name" class="add-friend-input" placeholder="Enter friend's name" required>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <button type="submit" class="add-friend-btn">
                     <i class="fas fa-user-plus"></i>
                     Add Friend
@@ -355,6 +356,7 @@
                         <span class="friend-name">{{ friend.name }}</span>
                         <div class="friend-actions">
                             <form action="{{ url_for('delete_friend', friend_id=friend.id) }}" method="POST">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <button type="submit" class="delete-btn">
                                     <i class="fas fa-trash-alt"></i>
                                     Delete

@@ -373,6 +373,7 @@
         
         <div class="card">
             <form method="POST" class="settle-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 <div class="form-group">
                     <label for="payer">Payer</label>
                     <div class="input-wrapper">

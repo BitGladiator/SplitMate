@@ -3,6 +3,7 @@
   <h2>Monthly Summary - {{ month }}/{{ year }}</h2>
 
   <form method="get">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <label for="month">Month:</label>
     <select name="month" id="month">
       {% for m in range(1, 13) %}
