@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Insights | SplitMate</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #7B68EE;
+            --primary-dark: #5F4BD8;
+            --primary-light: #F0EDFF;
+            --secondary: #20C5C5;
+            --accent: #FF7E5F;
+            --dark: #1A1A2E;
+            --darker: #12121A;
+            --light: #F9FAFF;
+            --lighter: #FFFFFF;
+            --gray: #E2E8F0;
+            --gray-dark: #94A3B8;
+            --success: #2ECC71;
+            --danger: #FF4757;
+            --warning: #FFA502;
+            --border-radius: 24px;
+            --border-radius-sm: 12px;
+            --border-radius-xs: 8px;
+            --box-shadow: 0 24px 48px rgba(0, 0, 0, 0.12);
+            --box-shadow-sm: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            --glass-effect: rgba(255, 255, 255, 0.96);
+            --border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F5F7FF 0%, #EDF0F7 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: var(--darker);
+            font-weight: 700;
+            font-size: 38px;
+            letter-spacing: -1.2px;
+            font-family: 'Space Grotesk', sans-serif;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 2px;
+        }
+        
+        .back-btn {
+            background: var(--lighter);
+            color: var(--primary);
+            border: none;
+            padding: 14px 24px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: var(--border-radius-xs);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: var(--box-shadow-sm);
+            text-decoration: none;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(123, 104, 238, 0.15);
+            color: var(--primary-dark);
+        }
+        
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 32px;
+            margin-bottom: 40px;
+        }
+        
+        .chart-container {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 32px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: var(--border);
+            min-height: 400px;
+        }
+        
+        .chart-container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
+        }
+        
+        .chart-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--darker);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .chart-title i {
+            color: var(--primary);
+            font-size: 20px;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 300px;
+            color: var(--gray-dark);
+            font-size: 16px;
+        }
+        
+        .loading i {
+            margin-right: 12px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow-sm);
+            padding: 28px;
+            text-align: center;
+            transition: var(--transition);
+            border: var(--border);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+            color: white;
+        }
+        
+        .stat-icon.spending { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); }
+        .stat-icon.friends { background: linear-gradient(135deg, var(--secondary), #1db1b1); }
+        .stat-icon.settlements { background: linear-gradient(135deg, var(--success), #27ae60); }
+        .stat-icon.average { background: linear-gradient(135deg, var(--warning), #e67e22); }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--darker);
+            margin-bottom: 8px;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-dark);
+            font-weight: 500;
+        }
+        
+        .export-section {
+            background: var(--glass-effect);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 40px;
+            transition: var(--transition);
+            border: var(--border);
+            text-align: center;
+        }
+        
+        .export-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--darker);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        
+        .export-description {
+            color: var(--gray-dark);
+            margin-bottom: 32px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--box-shadow-sm);
+            text-decoration: none;
+            min-width: 160px;
+            justify-content: center;
+        }
+        
+        .export-btn.secondary {
+            background: linear-gradient(135deg, var(--secondary), #1db1b1);
+        }
+        
+        .export-btn.accent {
+            background: linear-gradient(135deg, var(--accent), #e55039);
+        }
+        
+        .export-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .export-btn i {
+            font-size: 18px;
+        }
+        
+        /* Chart specific styles */
+        .chart-container.full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 32px 16px;
+            }
+            
+            .chart-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .chart-container {
+                padding: 24px;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .export-btn {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            h1 {
+                font-size: 30px;
+            }
+        }
+        
+        /* Custom chart colors */
+        .chart-colors {
+            --color-1: #7B68EE;
+            --color-2: #20C5C5;
+            --color-3: #FF7E5F;
+            --color-4: #2ECC71;
+            --color-5: #FFA502;
+            --color-6: #FF4757;
+            --color-7: #5A3EE8;
+            --color-8: #1db1b1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Analytics & Insights</h1>
+            <a href="{{ url_for('dashboard') }}" class="back-btn">
+                <i class="fas fa-arrow-left"></i>
+                Dashboard
+            </a>
+        </div>
+        
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon spending">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stat-value" id="total-spending">₹0</div>
+                <div class="stat-label">Total Spending</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon friends">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-value" id="active-friends">0</div>
+                <div class="stat-label">Active Friends</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon settlements">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="stat-value" id="total-settlements">₹0</div>
+                <div class="stat-label">Total Settlements</div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon average">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <div class="stat-value" id="avg-expense">₹0</div>
+                <div class="stat-label">Avg. Expense</div>
+            </div>
+        </div>
+        
+        <!-- Charts Grid -->
+        <div class="chart-grid">
+            <!-- Monthly Spending Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-chart-area"></i>
+                    Monthly Spending Trend
+                </div>
+                <div class="chart-wrapper">
+                    <div class="loading" id="monthly-loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading chart...
+                    </div>
+                    <canvas id="monthlySpendingChart" style="display: none;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Friend Spending Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-user-friends"></i>
+                    Friend Spending Comparison
+                </div>
+                <div class="chart-wrapper">
+                    <div class="loading" id="friend-loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading chart...
+                    </div>
+                    <canvas id="friendSpendingChart" style="display: none;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Category Breakdown Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-chart-pie"></i>
+                    Expense Categories
+                </div>
+                <div class="chart-wrapper">
+                    <div class="loading" id="category-loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading chart...
+                    </div>
+                    <canvas id="categoryChart" style="display: none;"></canvas>
+                </div>
+            </div>
+            
+            <!-- Settlement Trends Chart -->
+            <div class="chart-container">
+                <div class="chart-title">
+                    <i class="fas fa-trending-up"></i>
+                    Settlement Trends
+                </div>
+                <div class="chart-wrapper">
+                    <div class="loading" id="settlement-loading">
+                        <i class="fas fa-spinner"></i>
+                        Loading chart...
+                    </div>
+                    <canvas id="settlementChart" style="display: none;"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Export Section -->
+        <div class="export-section">
+            <div class="export-title">Export Your Data</div>
+            <div class="export-description">
+                Download comprehensive reports and data exports to analyze your spending patterns offline or share with your group.
+            </div>
+            <div class="export-buttons">
+                <a href="{{ url_for('export') }}" class="export-btn">
+                    <i class="fas fa-download"></i>
+                    Export Options
+                </a>
+                <a href="{{ url_for('export_csv', type='expenses') }}" class="export-btn secondary">
+                    <i class="fas fa-file-csv"></i>
+                    Export CSV
+                </a>
+                <a href="{{ url_for('export_pdf') }}" class="export-btn accent">
+                    <i class="fas fa-file-pdf"></i>
+                    Export PDF
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Chart configurations
+        const chartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        font: {
+                            family: 'Inter',
+                            size: 12
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Inter'
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        color: 'rgba(0,0,0,0.05)'
+                    },
+                    ticks: {
+                        font: {
+                            family: 'Inter'
+                        }
+                    }
+                }
+            }
+        };
+
+        const colors = [
+            '#7B68EE', '#20C5C5', '#FF7E5F', '#2ECC71', 
+            '#FFA502', '#FF4757', '#5A3EE8', '#1db1b1'
+        ];
+
+        // Load monthly spending chart
+        async function loadMonthlySpending() {
+            try {
+                const response = await fetch('/api/chart-data?type=monthly_spending');
+                const result = await response.json();
+                
+                const ctx = document.getElementById('monthlySpendingChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: result.data.map(d => d.month),
+                        datasets: [{
+                            label: 'Monthly Spending',
+                            data: result.data.map(d => d.amount),
+                            borderColor: colors[0],
+                            backgroundColor: colors[0] + '20',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: colors[0],
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6
+                        }]
+                    },
+                    options: {
+                        ...chartOptions,
+                        scales: {
+                            ...chartOptions.scales,
+                            y: {
+                                ...chartOptions.scales.y,
+                                ticks: {
+                                    ...chartOptions.scales.y.ticks,
+                                    callback: function(value) {
+                                        return '₹' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('monthly-loading').style.display = 'none';
+                document.getElementById('monthlySpendingChart').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading monthly spending chart:', error);
+                document.getElementById('monthly-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading chart';
+            }
+        }
+
+        // Load friend spending chart
+        async function loadFriendSpending() {
+            try {
+                const response = await fetch('/api/chart-data?type=friend_spending');
+                const result = await response.json();
+                
+                const ctx = document.getElementById('friendSpendingChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: result.data.map(d => d.name),
+                        datasets: [
+                            {
+                                label: 'Total Paid',
+                                data: result.data.map(d => d.total_paid),
+                                backgroundColor: colors[0] + '80',
+                                borderColor: colors[0],
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Total Owed',
+                                data: result.data.map(d => d.total_owed),
+                                backgroundColor: colors[1] + '80',
+                                borderColor: colors[1],
+                                borderWidth: 2
+                            }
+                        ]
+                    },
+                    options: {
+                        ...chartOptions,
+                        scales: {
+                            ...chartOptions.scales,
+                            y: {
+                                ...chartOptions.scales.y,
+                                ticks: {
+                                    ...chartOptions.scales.y.ticks,
+                                    callback: function(value) {
+                                        return '₹' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('friend-loading').style.display = 'none';
+                document.getElementById('friendSpendingChart').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading friend spending chart:', error);
+                document.getElementById('friend-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading chart';
+            }
+        }
+
+        // Load category chart
+        async function loadCategoryChart() {
+            try {
+                const response = await fetch('/api/chart-data?type=category_breakdown');
+                const result = await response.json();
+                
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: result.data.map(d => d.category),
+                        datasets: [{
+                            data: result.data.map(d => d.amount),
+                            backgroundColor: colors.slice(0, result.data.length),
+                            borderColor: '#ffffff',
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true,
+                                    font: {
+                                        family: 'Inter',
+                                        size: 12
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return context.label + ': ₹' + context.parsed.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('category-loading').style.display = 'none';
+                document.getElementById('categoryChart').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading category chart:', error);
+                document.getElementById('category-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading chart';
+            }
+        }
+
+        // Load settlement trends chart
+        async function loadSettlementChart() {
+            try {
+                const response = await fetch('/api/chart-data?type=settlement_trends');
+                const result = await response.json();
+                
+                const ctx = document.getElementById('settlementChart').getContext('2d');
+                
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: result.data.map(d => d.month),
+                        datasets: [{
+                            label: 'Settlement Amount',
+                            data: result.data.map(d => d.amount),
+                            backgroundColor: colors[3] + '80',
+                            borderColor: colors[3],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        ...chartOptions,
+                        scales: {
+                            ...chartOptions.scales,
+                            y: {
+                                ...chartOptions.scales.y,
+                                ticks: {
+                                    ...chartOptions.scales.y.ticks,
+                                    callback: function(value) {
+                                        return '₹' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+                
+                document.getElementById('settlement-loading').style.display = 'none';
+                document.getElementById('settlementChart').style.display = 'block';
+            } catch (error) {
+                console.error('Error loading settlement chart:', error);
+                document.getElementById('settlement-loading').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Error loading chart';
+            }
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                // Load friend spending data for statistics
+                const friendResponse = await fetch('/api/chart-data?type=friend_spending');
+                const friendResult = await friendResponse.json();
+                
+                const monthlyResponse = await fetch('/api/chart-data?type=monthly_spending');
+                const monthlyResult = await monthlyResponse.json();
+                
+                const settlementResponse = await fetch('/api/chart-data?type=settlement_trends');
+                const settlementResult = await settlementResponse.json();
+                
+                // Calculate statistics
+                const totalSpending = monthlyResult.data.reduce((sum, d) => sum + d.amount, 0);
+                const activeFriends = friendResult.data.length;
+                const totalSettlements = settlementResult.data.reduce((sum, d) => sum + d.amount, 0);
+                const totalExpenses = monthlyResult.data.reduce((sum, d) => sum + d.expenses_count, 0);
+                const avgExpense = totalExpenses > 0 ? totalSpending / totalExpenses : 0;
+                
+                // Update UI
+                document.getElementById('total-spending').textContent = '₹' + totalSpending.toLocaleString();
+                document.getElementById('active-friends').textContent = activeFriends;
+                document.getElementById('total-settlements').textContent = '₹' + totalSettlements.toLocaleString();
+                document.getElementById('avg-expense').textContent = '₹' + Math.round(avgExpense).toLocaleString();
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Initialize all charts and statistics
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStatistics();
+            loadMonthlySpending();
+            loadFriendSpending();
+            loadCategoryChart();
+            loadSettlementChart();
+        });
+    </script>
+</body>
+</html>
