@@ -1,4 +1,4 @@
-# 💫 SplitMate
+# SplitMate
 
 <div align="center">
 
@@ -17,21 +17,21 @@
 
 ---
 
-## ✨ Features
+## Features
 
-### 🎯 **Core Functionality**
+### **Core Functionality**
 - **Smart Expense Splitting** - Automatically calculate fair splits among friends
 - **Real-time Balance Tracking** - See who owes what at a glance
 - **Settlement Management** - Record payments and settle debts seamlessly
 - **Monthly Summaries** - Detailed breakdown of expenses and settlements
 
-### 🎨 **Premium Design**
+### **Premium Design**
 - **Glassmorphism UI** - Modern, elegant interface with blur effects
 - **Responsive Design** - Perfect on desktop, tablet, and mobile
 - **Interactive Elements** - Smooth animations and micro-interactions
 - **Dark/Light Themes** - Comfortable viewing in any lighting
 
-### 🔒 **Security & Performance**
+### **Security & Performance**
 - **CSRF Protection** - Secure forms with token validation
 - **SQLite Database** - Reliable local data storage
 - **Optimized Queries** - Fast performance with proper indexing
@@ -39,7 +39,7 @@
 
 ---
 
-## 🎥 Demo
+## Demo
 
 ### Dashboard Overview
 ```
@@ -53,15 +53,15 @@
 ### Key Screens
 | Screen | Description |
 |--------|-------------|
-| 🏠 **Dashboard** | Overview of expenses, balances, and recent activity |
-| ➕ **Add Expense** | Beautiful form with smart friend selection |
-| 👥 **Manage Friends** | Add, edit, and remove friends from your circle |
-| ⚖️ **Settle Payments** | Record payments and clear debts |
-| 📈 **Monthly Summary** | Detailed analytics and expense breakdowns |
+|  **Dashboard** | Overview of expenses, balances, and recent activity |
+|  **Add Expense** | Beautiful form with smart friend selection |
+|  **Manage Friends** | Add, edit, and remove friends from your circle |
+|  **Settle Payments** | Record payments and clear debts |
+|  **Monthly Summary** | Detailed analytics and expense breakdowns |
 
 ---
 
-## 🚀 Installation
+## Installation
 
 ### Prerequisites
 - Python 3.8 or higher
@@ -109,11 +109,11 @@ python app.py
    flask run
    ```
 
-The app will be available at `http://localhost:5000` 🎉
+The app will be available at `http://localhost:5000` 
 
 ---
 
-## 📖 Usage
+## Usage
 
 ### Adding Your First Expense
 
@@ -141,23 +141,23 @@ Generate detailed reports to understand spending patterns:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### Project Structure
 ```
 splitmate/
-├── 📁 static/
+├──  static/
 │   └── styles.css          # Global styles and themes
-├── 📁 templates/
+├──  templates/
 │   ├── dashboard.html      # Main dashboard
 │   ├── add_expense.html    # Expense creation form
 │   ├── friends.html        # Friend management
 │   ├── settle.html         # Payment settlement
 │   └── monthly_summary.html # Analytics dashboard
-├── 📄 app.py              # Main Flask application
-├── 📄 models.py           # Database models
-├── 📄 extensions.py       # Flask extensions
-└── 📄 requirements.txt    # Python dependencies
+├──  app.py              # Main Flask application
+├──  models.py           # Database models
+├──  extensions.py       # Flask extensions
+└──  requirements.txt    # Python dependencies
 ```
 
 ### Database Schema
@@ -197,7 +197,7 @@ erDiagram
 
 ---
 
-## 🔧 API Reference
+## API Reference
 
 ### Expense Management
 
@@ -230,7 +230,7 @@ erDiagram
 
 ---
 
-## 🎨 Customization
+## Customization
 
 ### Themes & Styling
 
@@ -254,7 +254,7 @@ SplitMate uses CSS custom properties for easy theming:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We love contributions! Here's how you can help make SplitMate even better:
 
@@ -272,11 +272,11 @@ We love contributions! Here's how you can help make SplitMate even better:
 - Use **semantic commit messages**
 
 ### Areas We Need Help
-- 🐛 **Bug Fixes** - Help us squash bugs
-- ✨ **New Features** - Implement roadmap items
-- 📚 **Documentation** - Improve guides and API docs
-- 🎨 **UI/UX** - Enhance user experience
-- 🧪 **Testing** - Add test coverage
+- **Bug Fixes** - Help us squash bugs
+- **New Features** - Implement roadmap items
+- **Documentation** - Improve guides and API docs
+- **UI/UX** - Enhance user experience
+- **Testing** - Add test coverage
 
 ---
 
@@ -284,7 +284,7 @@ We love contributions! Here's how you can help make SplitMate even better:
 
 **Made with ❤️ for friends who split bills together**
 
-⭐ Star us on GitHub if you find SplitMate useful!
+Star us on GitHub if you find SplitMate useful!
 
 [⬆ Back to Top](#-splitmate)
 
