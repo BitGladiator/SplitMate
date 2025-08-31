@@ -15,17 +15,31 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, 
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 
+# 2. CREATE AND CONFIGURE APP
 app = Flask(__name__)
 
-# --- App Configuration ---
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'splitmate.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Disable SQLAlchemy's modification tracking
-app.secret_key = "your_secret_key_here"  # IMPORTANT: Change this to a strong secret key!
 
-# --- Initialize Extensions ---
-db.init_app(app)    
-csrf = CSRFProtect(app)  # Enable CSRF Protection for all POST, PUT, DELETE methods
+# Use environment variable for database URL, fallback to data directory
+database_url = os.environ.get('DATABASE_URL')
+if not database_url:
+    # Ensure data directory exists
+    data_dir = os.path.join(basedir, 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    database_url = f'sqlite:///{os.path.join(data_dir, "splitmate.db")}'
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.environ.get('SECRET_KEY', "your_secret_key_here")
+
+# Ensure data directory exists
+data_dir = os.path.join(basedir, 'data')
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir, exist_ok=True)
+
+# 3. INITIALIZE EXTENSIONS (right after config)
+db.init_app(app)
+csrf = CSRFProtect(app)
 
 @app.route('/')
 def index():
@@ -236,8 +250,6 @@ def delete_settlement(settlement_id):
     flash('Settlement deleted successfully.', 'success')
     return redirect(request.referrer or url_for('dashboard'))
 
-
-# ============= NEW ROUTES FOR CHARTS AND REPORTS =============
 
 @app.route('/analytics')
 def analytics():
@@ -608,18 +620,14 @@ def export_pdf():
     response.headers['Content-Type'] = 'application/pdf'
     
     return response
-
-
 if __name__ == '__main__':
     with app.app_context():
+        # Ensure data directory exists before creating database
+        data_dir = os.path.join(basedir, 'data')
+        os.makedirs(data_dir, exist_ok=True)
         db.create_all()
-    app.run(debug=True)
     
-    
-    
-    
-    
-    
-    
-    
-    
+    # Use host='0.0.0.0' for Docker and proper port
+    port = int(os.environ.get('PORT', 5000))
+    debug_mode = os.environ.get('FLASK_ENV') == 'development'
+    app.run(host='0.0.0.0', port=port, debug=debug_mode)

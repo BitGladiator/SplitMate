@@ -12,12 +12,9 @@ services:
       - FLASK_APP=app.py
       - FLASK_ENV=production
       - SECRET_KEY=your-super-secret-key-change-this-in-production
-      - DATABASE_URL=sqlite:///data/splitmate.db
     volumes:
-      # Mount volume for database persistence
+      # Mount volume for database persistence with proper user mapping
       - splitmate_data:/app/data
-      # Mount static files (optional, for easier development)
-      - ./static:/app/static
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/"]
@@ -25,6 +22,8 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Set user to match the container's appuser (1000:1000 is typical)
+    user: "1000:1000"
 
   # Optional: Nginx reverse proxy for production
   nginx:
