@@ -20,11 +20,11 @@ app = Flask(__name__)
 # --- App Configuration ---
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'splitmate.db')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Disable SQLAlchemy's modification tracking
 app.secret_key = "your_secret_key_here"  # IMPORTANT: Change this to a strong secret key!
 
 # --- Initialize Extensions ---
-db.init_app(app)
+db.init_app(app)    
 csrf = CSRFProtect(app)  # Enable CSRF Protection for all POST, PUT, DELETE methods
 
 @app.route('/')
@@ -34,14 +34,14 @@ def index():
 
 @app.route('/dashboard')
 def dashboard():
-    expenses = Expense.query.order_by(Expense.timestamp.desc()).all()
+    expenses = Expense.query.order_by(Expense.timestamp.desc()).all() # Get all expenses
 
-    balances = defaultdict(float)
-    you_owe = 0
-    you_are_owed = 0
+    balances = defaultdict(float) # Initialize a dictionary to store balances
+    you_owe = 0 # Initialize a variable to store the amount you owe
+    you_are_owed = 0 # Initialize a variable to store the amount you are owed
 
     for expense in expenses:
-        split_friends = expense.split_with()
+        split_friends = expense.split_with() 
         payer = expense.payer
         total_amount = expense.amount
         split_count = len(split_friends)
@@ -614,3 +614,12 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+    
+    
+    
+    
+    
+    
+    
+    
+    
